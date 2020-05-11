@@ -1,18 +1,31 @@
 package com.ifan112.demo.sb.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.SessionException;
+import org.apache.shiro.session.mgt.*;
+import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.crazycake.shiro.exception.SerializationException;
+import org.crazycake.shiro.serializer.RedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.http.Cookie;
+import java.io.IOException;
 import java.util.HashMap;
 
 @Configuration
@@ -33,19 +46,52 @@ public class ShiroConfiguration {
         return authorizingRealm;
     }
 
-    // @Bean
-    // public SessionDAO sessionDAO() {
-    //     return new ShiroRedisSessionDAO();
-    // }
-    //
-    // @Bean
-    // public SessionManager sessionManager() {
-    //     DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-    //     // sessionManager.setDeleteInvalidSessions(true);
-    //     sessionManager.setSessionDAO(sessionDAO());
-    //
-    //     return sessionManager;
-    // }
+    @Bean
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost("10.10.8.167:6379");
+        redisManager.setTimeout(1000);
+
+        return redisManager;
+    }
+
+    @Bean
+    public SessionIdGenerator sessionIdGenerator() {
+        return new JavaUuidSessionIdGenerator();
+    }
+
+    @Bean
+    public SessionDAO sessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+
+        // redisSessionDAO.setKeyPrefix("SHIRO_JSESSIONID");
+        redisSessionDAO.setRedisManager(redisManager());
+        redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
+        // redisSessionDAO.setKeySerializer(new RedisSerializer() {
+        //     @Override
+        //     public byte[] serialize(Object o) throws SerializationException {
+        //         return new byte[0];
+        //     }
+        //
+        //     @Override
+        //     public Object deserialize(byte[] bytes) throws SerializationException {
+        //         return null;
+        //     }
+        // });
+
+        return redisSessionDAO;
+    }
+
+    @Bean
+    public SessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        // sessionManager.setDeleteInvalidSessions(true);
+        // sessionManager.setSessionDAO(sessionDAO());
+
+        sessionManager.setSessionDAO(sessionDAO());
+
+        return sessionManager;
+    }
 
     @Bean
     public SecurityManager securityManager() {
@@ -53,7 +99,7 @@ public class ShiroConfiguration {
         securityManager.setRealm(authorizingRealm());
         // securityManager.setCacheManager();
 
-        securityManager.setSessionManager(securityManager);
+        securityManager.setSessionManager(sessionManager());
 
         return securityManager;
     }

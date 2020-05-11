@@ -12,7 +12,7 @@ public class RoutingController {
     @GetMapping("/login")
     public String login(HttpServletRequest request) {
         if (null != SecurityUtils.getSubject().getPrincipal()) {
-            return "/index";
+            return "index";
         }
 
         String e = (String) request.getAttribute("shiroLoginFailure");
@@ -21,12 +21,12 @@ public class RoutingController {
             System.out.println("上次登录认证时的错误：");
         }
 
-        return "/login";
+        return "login";
     }
 
-    @GetMapping("/index")
+    @GetMapping("index")
     public String index() {
-        return "/index";
+        return "index";
     }
 
 

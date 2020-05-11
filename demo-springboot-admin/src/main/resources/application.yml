@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: sba
+  boot:
+    admin:
+      context-path: /test
+
+server:
+  port: 8088
+

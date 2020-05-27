@@ -8,6 +8,7 @@
         <module>demo-springboot-admin</module>
         <module>demo-springboot-webflux</module>
         <module>demo-springboot-shiro</module>
+        <module>demo-springboot-t</module>
     </modules>
 
     <parent>

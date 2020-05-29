@@ -18,6 +18,17 @@ public class EurekaController {
     public String info() {
         EurekaAppResult appResult = eurekaService.getApps();
 
+        return makeRespContent(appResult);
+    }
+
+    @GetMapping("/up-info")
+    public String upInfo() {
+        EurekaAppResult appResult = eurekaService.getUpApps();
+
+        return makeRespContent(appResult);
+    }
+
+    private String makeRespContent(EurekaAppResult appResult) {
         String infoContent = "应用个数: " + appResult.applications.application.size();
         infoContent += "\n";
 
@@ -30,4 +41,5 @@ public class EurekaController {
 
         return infoContent;
     }
+
 }

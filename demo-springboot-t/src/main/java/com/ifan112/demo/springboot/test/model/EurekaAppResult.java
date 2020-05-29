@@ -19,5 +19,7 @@ public class EurekaAppResult {
         public String instanceId;
         public String hostName;
         public String ipAddr;
+
+        public String status;
     }
 }

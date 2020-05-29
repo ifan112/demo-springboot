@@ -60,5 +60,40 @@ public class EurekaServiceTest extends EurekaBaseTest {
     }
 
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetUpApps() {
+        // 模拟了外部服务的响应
+        when(mockRestTemplate.exchange(any(RequestEntity.class), any(Class.class)))
+                .thenReturn(ResponseEntity.ok(prepareRespEntityWithOutOffServiceInstance()));
+
+        /*
+         * 该测试用例主要是用于测试 EurekaService 在获取到了响应之后的处理逻辑
+         *
+         * 实际上，根据测试数据的不同，可能会执行不同的代码。例如，对于这个测试用例，
+         * 即使去掉非 UP 状态的实例 instance2，应用也还有一个 UP 状态的实例 instance。
+         *
+         * 因此，应用不会被"移除"，相应地下面的这行源码不会被测试到
+         * applicationList.remove(application);
+         *
+         * 这属于测试代码覆盖率的范畴，之后再学习。
+         */
+        EurekaAppResult result = eurekaService.getUpApps();
+
+        assertNotNull(result);
+        assertNotNull(result.applications);
+        assertEquals(1, result.applications.application.size());
+
+        EurekaAppResult.Application firstApplication = result.applications.application.get(0);
+        assertEquals(applicationName, firstApplication.name);
+        assertEquals(1, firstApplication.instance.size());
+
+        EurekaAppResult.Instance firstInstance = firstApplication.instance.get(0);
+        assertEquals(instanceId, firstInstance.instanceId);
+        assertEquals(hostName, firstInstance.hostName);
+        assertEquals(ipAddr, firstInstance.ipAddr);
+    }
+
+
 
 }

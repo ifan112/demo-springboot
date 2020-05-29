@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 )
 @TestPropertySource(
         properties = {
-                "url.baidu=http://www.baidu.com",    // 行内声明的属性
+                "url.baidu=https://www.baidu.cn",    // 行内声明的属性
                 "spring.main.banner-mode=off"
         }
 )
@@ -60,9 +60,7 @@ public class DemoTest {
          * 1. src/main/resources/application.properties 属性文件
          * 2. src/test/resources/application.properties 属性文件
          * 3. 当前测试类上基于 @TestPropertySource 声明的行内属性
-         *
-         * 因此，这个测试用例将会失败
          */
-        Assert.assertEquals("https://www.baidu.com", urlBaidu);
+        Assert.assertEquals("https://www.baidu.cn", urlBaidu);
     }
 }

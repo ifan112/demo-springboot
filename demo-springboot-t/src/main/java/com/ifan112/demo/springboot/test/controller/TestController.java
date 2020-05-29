@@ -1,4 +1,4 @@
-package com.ifan112.demo.springboot.test;
+package com.ifan112.demo.springboot.test.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

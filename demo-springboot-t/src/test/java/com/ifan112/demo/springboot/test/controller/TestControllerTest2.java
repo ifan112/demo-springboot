@@ -1,4 +1,4 @@
-package com.ifan112.demo.springboot.test;
+package com.ifan112.demo.springboot.test.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

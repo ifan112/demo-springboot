@@ -12,6 +12,37 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**
+ * /Library/Java/JavaVirtualMachines/jdk1.8.0_212.jdk/Contents/Home/bin/java            // java 命令行，启动 JVM 虚拟机
+ * -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:56773,suspend=y,server=n -ea
+ * -Didea.test.cyclic.buffer.size=1048576
+ * -javaagent:/Users/ifan/Library/Caches/JetBrains/IdeaIC2020.1/captureAgent/debugger-agent.jar
+ * -Dfile.encoding=UTF-8
+ *
+ * -classpath                                                                           // 执行测试用例时的 classpath
+ * /Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar:
+ * /Applications/IntelliJ IDEA CE.app/Contents/plugins/junit/lib/junit*.jar:            // idea 工具包
+ *
+ * /Library/Java/JavaVirtualMachines/jdk1.8.0_212.jdk/Contents/Home/*.jar:              // jdk 源码包
+ *
+ * /Users/ifan/Workspaces/Java/demo-springboot/demo-springboot-t/target/test-classes:   // test 包下源码及文件编译后的类
+ * /Users/ifan/Workspaces/Java/demo-springboot/demo-springboot-t/target/classes:        // main 包下源码及文件在编译后的类
+ *
+ * /Users/ifan/Documents/Repository/*.jar                                               // 依赖包
+ *
+ * com.intellij.rt.junit.JUnitStarter                                                   // 入口类，将调用它的 main 方法
+ * -ideVersion5 -junit4 com.ifan112.demo.springboot.test.DemoTest,test                  // 传入参数，com.ifan112.demo.springboot.test.DemoTest,test  分别测试用例所在的类方法
+ *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * 以上是使用 IDEA 执行测试用例时，实际上执行的命令。简单来说是，将测试用例所在的类和方法的名称作为参数，传递并启动 JUnitStarter。
+ *
+ * 需要特别注意的是在 -classpath 中指定了 target/test-classes 和 target/classes 这两个目录，之后使用到的一些文件（例如，每个
+ * 测试类默认关联的上下文声明文件 XxxTest-context.xml 或 XxxTestContext.groovy）将会默认地从这两个目录下查找。
+ * {@link org.springframework.test.context.support.AbstractContextLoader#generateDefaultLocations(Class)}
+ *
+ */
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @TestExecutionListeners(
@@ -27,7 +58,9 @@ import org.springframework.test.context.junit4.SpringRunner;
                 "spring.main.banner-mode=off"
         },
         locations = {
-                "demo-test.properties"               // 行内声明的属性文件，要求文件与测试类在同一个包下
+                "demo-test.properties"               // 行内声明的属性文件
+                                                     // 如果以 / 开头则表示 classpath 下绝对路径文件，否则表示 classpath 下与测试类相同目录的文件
+                                                     // 以此声明为例，它表示 classpath:/com/ifan112/demo/springboot/test/demo-test.properties
         }
 )
 @IfProfileValue(name = "user.name", value = "ifan") // 当系统用户是 ifan 时才会执行测试用例

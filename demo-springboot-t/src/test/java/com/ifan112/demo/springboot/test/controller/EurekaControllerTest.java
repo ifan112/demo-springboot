@@ -15,7 +15,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(
+        controllers = {
+                EurekaController.class  // 指定待测试的 Controller，避免管理其它 Controller 及其依赖，
+                                        // 否则可能导致由于依赖不满足而启动失败。例如依赖 @Service 或 @Repository 组件
+                                        // 而这些组件由于在 WebMvcTest 上下文中根本不进行管理，因此无法实现自动注入。
+        }
+)
 @RunWith(SpringRunner.class)
 public class EurekaControllerTest extends EurekaBaseTest {
 

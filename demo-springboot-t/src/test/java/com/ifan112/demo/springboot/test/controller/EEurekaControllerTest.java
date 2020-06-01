@@ -43,7 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 在测试类中使用 @MockBean 提供可用的第三方组件实例，但是这又需要同时对 Mock 出来的第三方组件实例进行定制。
  *
  *
- * 遇到一个奇怪的问题，如果当前测试类以'数字'结尾，那么 mvn test 命令将不会执行这个类中的测试用例，不清楚原因。
+ *
+ * 遇到一个奇怪的问题，如果当前测试类以'数字'结尾，那么 mvn test 命令将不会执行这个类中的测试用例，原因是
+ * mvn test 只执行以 "Test" 开头或结尾的测试类中的测试用例。
  */
 
 @WebMvcTest(

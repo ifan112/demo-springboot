@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * 注解 @MybatisTest 使用的测试应用上下文 ApplicationContext 实现是 AnnotationConfigApplicationContext。
@@ -46,6 +45,26 @@ public class ModuleMapperTest {
         assertTrue(applicationContext instanceof AnnotationConfigApplicationContext);
     }
 
+
+    @Test
+    public void testInsert() {
+        int rows = moduleMapper.insert(prepareModule());
+
+        assertEquals(1, rows);
+
+        List<Module> moduleList = moduleMapper.selectAllModule();
+        assertEquals(1, moduleList.size());
+
+        Module moduleRecord = moduleList.get(0);
+
+        assertEquals(projectIdValue, moduleRecord.getProjectId());
+        assertEquals(groupIdValue, moduleRecord.getGroupId());
+        assertEquals(artifactIdValue, moduleRecord.getArtifactId());
+        assertEquals(packingValue, moduleRecord.getPacking());
+        assertEquals(versionValue, moduleRecord.getVersion());
+        assertEquals(parentModuleIdValue, moduleRecord.getParentModuleId());
+    }
+
     @Test
     public void testSelectAllModule() {
         List<Module> moduleList = moduleMapper.selectAllModule();
@@ -53,4 +72,35 @@ public class ModuleMapperTest {
         // 基于内存的 h2 数据库在每次测试之前数据表中都没有数据
         Assert.assertEquals(0, moduleList.size());
     }
+
+    @Test
+    public void testDelete() {
+        moduleMapper.insert(prepareModule());
+
+        int rows = moduleMapper.deleteById(1);
+
+        assertEquals(1, rows);
+
+        assertEquals(0, moduleMapper.selectAllModule().size());
+    }
+
+
+    private Integer projectIdValue = 1;
+    private String groupIdValue = "group_id";
+    private String artifactIdValue = "artifact_id";
+    private String packingValue = "jar";
+    private String versionValue = "version";
+    private Integer parentModuleIdValue = 0;
+
+    private Module prepareModule() {
+        return Module.builder()
+                .projectId(projectIdValue)
+                .groupId(groupIdValue)
+                .artifactId(artifactIdValue)
+                .packing(packingValue)
+                .version(versionValue)
+                .parentModuleId(parentModuleIdValue)
+                .build();
+    }
+
 }

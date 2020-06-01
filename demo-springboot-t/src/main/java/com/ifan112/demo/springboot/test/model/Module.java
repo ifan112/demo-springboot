@@ -1,10 +1,10 @@
 package com.ifan112.demo.springboot.test.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class Module {
 
     private Integer id;

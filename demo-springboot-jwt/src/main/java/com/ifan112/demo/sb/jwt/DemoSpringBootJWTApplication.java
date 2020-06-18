@@ -1,13 +1,11 @@
-package com.ifan112.demo.sb.web;
+package com.ifan112.demo.sb.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.shiro.session.mgt.SimpleSession;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoSpringBootWebApplication {
+public class DemoSpringBootJWTApplication {
 
     public static void main(String[] args) throws JsonProcessingException {
 
@@ -58,7 +56,7 @@ public class DemoSpringBootWebApplication {
          *
          */
 
-        SpringApplication springApplication = new SpringApplication(DemoSpringBootWebApplication.class);
+        SpringApplication springApplication = new SpringApplication(DemoSpringBootJWTApplication.class);
 
         springApplication.run(args);
     }

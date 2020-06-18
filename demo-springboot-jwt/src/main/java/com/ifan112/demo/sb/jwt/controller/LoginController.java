@@ -1,4 +1,4 @@
-package com.ifan112.demo.sb.web.controller;
+package com.ifan112.demo.sb.jwt.controller;
 
 // import com.ifan112.demo.sb.web.JWTToken;
 // import com.ifan112.demo.sb.web.JWTUtils;

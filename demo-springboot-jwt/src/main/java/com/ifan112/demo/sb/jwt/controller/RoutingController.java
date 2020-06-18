@@ -1,4 +1,4 @@
-package com.ifan112.demo.sb.web.controller;
+package com.ifan112.demo.sb.jwt.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;

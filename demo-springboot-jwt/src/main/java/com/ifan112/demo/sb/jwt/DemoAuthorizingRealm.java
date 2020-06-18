@@ -1,15 +1,13 @@
-package com.ifan112.demo.sb.web;
+package com.ifan112.demo.sb.jwt;
 
-import com.ifan112.demo.sb.web.entity.User;
+import com.ifan112.demo.sb.jwt.entity.User;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DemoAuthorizingRealm extends AuthorizingRealm {

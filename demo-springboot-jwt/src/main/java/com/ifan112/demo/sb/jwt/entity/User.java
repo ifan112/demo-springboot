@@ -1,4 +1,4 @@
-package com.ifan112.demo.sb.web.entity;
+package com.ifan112.demo.sb.jwt.entity;
 
 import lombok.Builder;
 import lombok.Data;

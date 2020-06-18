@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -79,6 +80,23 @@ public class TestController {
         return new TestRespDTO(num, "a");
     }
 
+    @GetMapping("/test6")
+    public TestRespDTO test6(@RequestParam Integer num) {
+        if (num < 0) {
+            return null;
+        }
+
+        return new TestRespDTO(num, "a");
+    }
+
+    @GetMapping("/test7")
+    public List<TestRespDTO> test7(@RequestParam Integer num) {
+        if (num < 0) {
+            return Collections.emptyList();
+        }
+
+        return Collections.singletonList(new TestRespDTO(num, "a"));
+    }
 
 
 

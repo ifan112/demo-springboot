@@ -5,38 +5,38 @@ import com.ifan112.demo.springboot.test.exception.ParameterInvalidException;
 import com.ifan112.demo.springboot.test.exception.ServiceException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class DemoSpringBootTestControllerAdvice {
 
     @ExceptionHandler(value = AccessForbiddenException.class)
-    public ResponseEntity<CodeAndMessage> accessForbidden(AccessForbiddenException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(CodeAndMessage.of(e.getCode(), e.getMessage()));
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public CodeAndMessage accessForbidden(AccessForbiddenException e) {
+        return CodeAndMessage.of(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = ParameterInvalidException.class)
-    public ResponseEntity<CodeAndMessage> parameterInvalid(ParameterInvalidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CodeAndMessage.of(e.getCode(), e.getMessage()));
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public CodeAndMessage parameterInvalid(ParameterInvalidException e) {
+        return CodeAndMessage.of(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(value = ServiceException.class)
-    public ResponseEntity<CodeAndMessage> genericServiceException(ServiceException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CodeAndMessage.of(e.getCode(), e.getMessage()));
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public CodeAndMessage genericServiceException(ServiceException e) {
+        return CodeAndMessage.of(e.getCode(), e.getMessage());
     }
 
 
     private static final String DATA_ACCESS_EXCEPTION_CODE = "Data Access Error.";
 
     @ExceptionHandler(value = DataAccessException.class)
-    public ResponseEntity<CodeAndMessage> dataAccessException(DataAccessException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(CodeAndMessage.of(DATA_ACCESS_EXCEPTION_CODE, e.getMessage()));
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public CodeAndMessage dataAccessException(DataAccessException e) {
+        return CodeAndMessage.of(DATA_ACCESS_EXCEPTION_CODE, e.getMessage());
     }
 
 
@@ -49,8 +49,24 @@ public class DemoSpringBootTestControllerAdvice {
             this.message = message;
         }
 
-        public static CodeAndMessage of(String code, String message) {
+        static CodeAndMessage of(String code, String message) {
             return new CodeAndMessage(code, message);
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
         }
     }
 

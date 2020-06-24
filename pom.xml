@@ -9,6 +9,7 @@
         <module>demo-springboot-webflux</module>
         <module>demo-springboot-shiro</module>
         <module>demo-springboot-t</module>
+        <module>demo-springboot-web</module>
         <module>demo-springboot-ff4j</module>
     </modules>
 

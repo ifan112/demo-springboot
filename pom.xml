@@ -11,6 +11,7 @@
         <module>demo-springboot-t</module>
         <module>demo-springboot-web</module>
         <module>demo-springboot-ff4j</module>
+        <module>demo-springboot-session</module>
     </modules>
 
     <parent>

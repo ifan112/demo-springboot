@@ -1,0 +1,11 @@
+server:
+  port: 8088
+
+spring:
+  redis:
+    host: 10.10.8.167
+    port: 6379
+  session:
+    store-type: redis
+    redis:
+      namespace: demo-springboot-session

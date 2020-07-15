@@ -4,8 +4,11 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 @Configuration
 public class DemoWebConfiguration {
@@ -23,6 +26,31 @@ public class DemoWebConfiguration {
             System.out.println("----- demoRestTemplateCustomer2 -----");
         };
     }
+
+    /**
+     * 自定义请求客户端请求拦截器
+     *
+     * @return 自定义请求客户端请求拦截器
+     */
+    @Bean
+    public ClientHttpRequestInterceptor demoInterceptor() {
+        return (request, body, execution) -> {
+            long start = System.currentTimeMillis();
+
+            System.out.println("----- 记录请求，开始：" + start + " -----");
+
+            // 交由下一个拦截器处理，当拦截器处理完之后，发出 HTTP 请求，返回 HTTP 响应
+            ClientHttpResponse response = execution.execute(request, body);
+
+            long end = System.currentTimeMillis();
+
+            System.out.println("----- 记录请求，结束：" + end + " -----");
+            System.out.println("----- 记录请求，耗时：" + (end - start) + " -----");
+
+            return response;
+        };
+    }
+
 
 
     @Bean
@@ -57,6 +85,18 @@ public class DemoWebConfiguration {
          * 此外，在使用 RestTemplateBuilder 来创建 RestTemplate 实例时，它内部的 ClientHttpRequestFactorySupplier 组件将会
          * 根据 classpath 中是否存在指定的 http（支持 apache httpclient 和 okhttp）来自动选择 ClientHttpRequestFactory 的实现。
          *
+         *
+         *
+         * Spring 支持通过实现 ClientHttpRequestInterceptor 接口并注册到 RestTemplate 中来拦截请求和响应。
+         *
+         * 例如，匿名的 demoInterceptor 用于记录请求和响应时间，以及在 Spring Boot Actuator 中对 RestTemplate
+         * 调用采样的 MetricsClientHttpRequestInterceptor。
+         *
+         *
+         *
+         * Spring 提供了 BasicAuthenticationInterceptor 这个请求拦截器，它将会拦截请求并且在 Header 中添加
+         * Authorization: Basic Base64(username:password) 以支持 Basic 认证方式。
+         *
          */
 
 
@@ -65,6 +105,14 @@ public class DemoWebConfiguration {
         // RestTemplate restTemplate = new RestTemplate();
         // restTemplate.setRequestFactory(requestFactory);
 
-        return builder.build();
+        // Base64 编码的 Basic Authorization，本质上通过添加 BasicAuthenticationInterceptor 这个请求拦截器实现的
+        // builder.basicAuthentication("username", "password");
+
+        RestTemplate restTemplate = builder.build();
+
+        // 添加自定义的拦截器
+        restTemplate.setInterceptors(Collections.singletonList(demoInterceptor()));
+
+        return restTemplate;
     }
 }

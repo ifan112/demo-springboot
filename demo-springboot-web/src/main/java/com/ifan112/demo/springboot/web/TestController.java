@@ -1,8 +1,10 @@
 package com.ifan112.demo.springboot.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class TestController {
@@ -11,6 +13,9 @@ public class TestController {
     // public String name(@PathVariable(name = "num") Integer num) {
     //     return num + " - name";
     // }
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/test")
     public String test(@RequestParam int num) {
@@ -48,5 +53,15 @@ public class TestController {
     static class P {
         public Integer id;
         public String message;
+    }
+
+    @GetMapping("/test5")
+    public String test5() {
+        ResponseEntity<String> respEntity = restTemplate.getForEntity("http://www.baidu.com", String.class);
+        System.out.println(respEntity.getStatusCode());
+
+        System.out.println(respEntity.getBody());
+
+        return "ok";
     }
 }

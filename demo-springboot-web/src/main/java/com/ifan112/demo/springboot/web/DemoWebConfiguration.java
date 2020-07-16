@@ -8,8 +8,6 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-
 @Configuration
 public class DemoWebConfiguration {
 
@@ -50,7 +48,6 @@ public class DemoWebConfiguration {
             return response;
         };
     }
-
 
 
     @Bean
@@ -97,6 +94,27 @@ public class DemoWebConfiguration {
          * Spring 提供了 BasicAuthenticationInterceptor 这个请求拦截器，它将会拦截请求并且在 Header 中添加
          * Authorization: Basic Base64(username:password) 以支持 Basic 认证方式。
          *
+         *
+         *
+         * 主要组件：
+         * 1. UriTemplateHandler    uri 模板处理器，根据传入的地址和参数构造 URI 对象。
+         *                          默认实现是 DefaultUriBuilderFactory
+         *
+         * 2. RequestCallback       由 ClientHttpRequestFactory 创建出 ClientHttpRequest 对象之后，
+         *                          回调 RequestCallback#dowWithRequest() 对该对象进一步处理。
+         *
+         *                          默认的回调处理是根据期望的响应体格式添加 Accept 头部。例如，对于期望返回 String 的请求，
+         *                          添加 Accept: text/plain,application/json,application/json
+         *
+         * 3. ResponseErrorHandler  判断响应是否有异常，以及当发生异常时如何处理异常。
+         *
+         *                          默认的异常判断逻辑是：如果 HTTP 响应码是 4xx 或 5xx 则判定为异常
+         *                          默认的异常处理逻辑是：将 4xx 和 body 包装成 HttpClientErrorException，
+         *                          将 5xx 和 body 包装成 HttpServerErrorException，其它异常码和 body
+         *                          包装成 UnknownHttpStatusCodeException。最后，将异常向上抛出
+         *
+         * 4. MessageConverter      响应体与 Java 对象的转换器
+         *
          */
 
 
@@ -108,11 +126,25 @@ public class DemoWebConfiguration {
         // Base64 编码的 Basic Authorization，本质上通过添加 BasicAuthenticationInterceptor 这个请求拦截器实现的
         // builder.basicAuthentication("username", "password");
 
-        RestTemplate restTemplate = builder.build();
 
-        // 添加自定义的拦截器
-        restTemplate.setInterceptors(Collections.singletonList(demoInterceptor()));
+        return builder.interceptors(demoInterceptor())              // 添加自定义的请求拦截器
+                // .setConnectTimeout(Duration.ofSeconds(10))
+                // .setReadTimeout(Duration.ofSeconds(10))
 
-        return restTemplate;
+                // .basicAuthentication("username", "password")     // 基于 base64(username:password) 的 Basic 认证
+
+                // .errorHandler(new ResponseErrorHandler() {
+                //     @Override
+                //     public boolean hasError(ClientHttpResponse response) throws IOException {
+                //         return false;
+                //     }
+                //
+                //     @Override
+                //     public void handleError(ClientHttpResponse response) throws IOException {
+                //
+                //     }
+                // })
+
+                .build();
     }
 }

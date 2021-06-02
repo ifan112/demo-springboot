@@ -13,6 +13,7 @@
         <module>demo-springboot-ff4j</module>
         <module>demo-springboot-session</module>
         <module>demo-springboot-nacos</module>
+        <module>demo-springboot-graphql</module>
     </modules>
 
     <parent>
